@@ -22,6 +22,7 @@
     };
 
     Vector.fromAngle = function fromAngle(angle, magnitude) {
+        var radians = Math.PI * angle / 180;
         return new Vector(magnitude * Math.cos(angle), magnitude * Math.sin(angle));
     };
 

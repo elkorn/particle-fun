@@ -1,10 +1,23 @@
 (function(window, document, exports, undefined) {
     var Vector = exports.Vector;
+    var environmentDensity = 1.22;
+    var gravity = 0;//9.81;
+    var slowdown = 10;
 
-    function Particle(point, velocity, acceleration) {
+    function Particle(point, velocity, acceleration, size, drag) {
         this.position = point || new Vector(0, 0);
         this.velocity = velocity || new Vector(0, 0);
         this.acceleration = acceleration || new Vector(0, 0);
+        this.drag = drag || 0.47;
+        this.frontalProjection = Math.PI * ((size || 0.5) ^ 2) / 10000;
+    }
+
+    function getSign(value) {
+        return value / Math.abs(value);
+    }
+
+    function getDrag(obj, velocity) {
+        return -0.5 * obj.drag * obj.frontalProjection * environmentDensity * Math.pow(velocity, 2) * getSign(velocity);
     }
 
     Particle.prototype.move = function moveParticle() {
@@ -22,6 +35,18 @@
         });
 
         this.acceleration.add(totalAcceleration);
+    };
+
+    // Particle.prototype.submitToGravity = function submitToGravity(gravityForce) {
+    //     this.acceleration.add(new Vector(0, gravityForce / 100));
+    // };
+
+    Particle.prototype.submitToDrag = function submitToDrag() {
+        var drag = new Vector(getDrag(this, this.velocity.x), getDrag(this, this.velocity.y));
+        var acceleration = new Vector(drag.x /*/ this.mass*/ , gravity + (drag.y /*/ this.mass*/ ));
+        // acceleration.x = (isNaN(acceleration.x) ? 0 : acceleration.x);
+        // acceleration.y = (isNaN(acceleration.y) ? 0 : acceleration.y);
+        this.acceleration.add(acceleration.multiply(1 / (slowdown + 1)));
     };
 
     exports.Particle = Particle;
