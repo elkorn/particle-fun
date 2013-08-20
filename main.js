@@ -8,20 +8,21 @@
     var ctx = canvas.getContext('2d');
     var particles = [];
     var emitters = [
-        new ParticleEmitter(new Vector(500, 300), Vector.fromAngle(210, 2), 10)
+        new ParticleEmitter(new Vector(500, 300), Vector.fromAngle(179.1, 1), 10)
     ];
     var fields = [
         // new Field(new Vector(600, 230), -140),
-        new Field(new Vector(600, 280), 40)
+        new Field(new Vector(0, 0), 0)
     ];
 
     var activeField = fields[0];
-    var maxParticles = 4000;
-    var emissionRate = 50;
+    var maxParticles = 10000;
+    var emissionRate = 4;
     var particleSize = 2;
     var currentColor = 0;
     var maxColor = 360;
-
+    var magnet = -10;
+    var md = false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -54,8 +55,9 @@
             // If we're out of bounds, drop this particle and move on to the next
             if (pos.x < 0 || pos.x > bounds.x || pos.y < 0 || pos.y > bounds.y) continue;
 
+            particle.submitToDrag();
             particle.submitToFields(fields);
-
+            // particle.submitToGravity(gravity);
             // Move our particles
             particle.move();
 
@@ -104,6 +106,18 @@
     }
 
     document.addEventListener('mousemove', activeField.setPosition.bind(activeField));
+    document.addEventListener('mousedown', function(e) {
+        activeField.mass += magnet;
+        md = true;
+        console.log("Current mass:", activeField.mass);
 
+    });
+    document.addEventListener('mouseup', function(e) {
+        if (md) {
+            activeField.mass -= magnet;
+            md = false;
+        }
+        console.log("Current mass:", activeField.mass);
+    });
     loop();
 })(window, document);

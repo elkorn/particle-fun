@@ -6,7 +6,7 @@
     }
 
     Field.prototype.setMass = function setMass(mass) {
-        this.mass = mass || 100;
+        this.mass = typeof mass !== "undefined" ? mass : 100;
         this.drawColor = mass < 0 ? "#f00" : "#0f0";
     };
 
