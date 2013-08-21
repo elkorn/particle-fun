@@ -8,40 +8,40 @@
     var ctx = canvas.getContext('2d');
     var particles = [];
     var emitters = [
-        new ParticleEmitter(new Vector(500, 300), Vector.fromAngle(179.1, 1), 10)
+        new ParticleEmitter(new Vector(300, 300), Vector.fromAngle(179.1, 5), 2),
+        new ParticleEmitter(new Vector(700, 300), Vector.fromAngle(179.1, 5), 2)
     ];
     var fields = [
         // new Field(new Vector(600, 230), -140),
-        new Field(new Vector(0, 0), 0)
+        new Field(new Vector(0, 0), 140)
     ];
 
     var activeField = fields[0];
-    var maxParticles = 10000;
-    var emissionRate = 4;
+    var maxParticles = 2000;
+    var emissionRate = 5;
     var particleSize = 2;
     var currentColor = 0;
     var maxColor = 360;
-    var magnet = -10;
+    var magnet = -560;
     var md = false;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     function drawParticles() {
-        ctx.fillStyle = 'hsl(' + (++currentColor % maxColor) + ',100%,90%)';
+        currentColor = ++currentColor % maxColor;
         particles.forEach(function(particle) {
-            var position = particle.position;
-            ctx.fillRect(position.x, position.y, particleSize, particleSize);
+            particle.draw(ctx, currentColor);
         });
     }
 
     function addNewParticles() {
-        if (particles.length > maxParticles) {
+        if (particles.length >= maxParticles) {
             return;
         }
 
         emitters.forEach(function(emitter) {
             for (var i = 0; i < emissionRate; i++) {
-                particles.push(emitter.emitParticle());
+                particles.push(emitter.emitParticle(particleSize));
             }
         });
     }

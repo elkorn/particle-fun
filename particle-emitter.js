@@ -9,13 +9,13 @@
         this.drawColor = '#999';
     }
 
-    ParticleEmitter.prototype.emitParticle = function emitParticle() {
+    ParticleEmitter.prototype.emitParticle = function emitParticle(size) {
         var angle = this.velocity.getAngle() + this.spread - (Math.random() * this.spread * 2);
         var magnitude = this.velocity.getMagnitude();
         var position = new Vector(this.position.x, this.position.y);
         var velocity = Vector.fromAngle(angle, magnitude);
 
-        return new Particle(position, velocity);
+        return new Particle(position, velocity, size);
     };
 
     exports.ParticleEmitter = ParticleEmitter;
